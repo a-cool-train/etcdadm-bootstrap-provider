@@ -42,6 +42,9 @@ type EtcdadmConfigSpec struct {
 	Users []capbk.User `json:"users,omitempty"`
 
 	// +optional
+	Groups []string `json:"groups,omitempty"`
+
+	// +optional
 	EtcdadmBuiltin bool `json:"etcdadmBuiltin,omitempty"`
 
 	// +optional
@@ -82,6 +85,10 @@ type CloudInitConfig struct {
 	// EtcdReleaseURL is an optional field to specify where etcdadm can download etcd from
 	// +optional
 	EtcdReleaseURL string `json:"etcdReleaseURL,omitempty"`
+
+	// InstallDir is an optional field to specify where etcdadm will extract etcd binaries to
+	// +optional
+	InstallDir string `json:"installDir,omitempty"`
 }
 
 // EtcdadmConfigStatus defines the observed state of EtcdadmConfig

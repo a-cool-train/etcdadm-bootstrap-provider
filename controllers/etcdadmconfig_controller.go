@@ -239,7 +239,8 @@ func (r *EtcdadmConfigReconciler) initializeEtcd(ctx context.Context, scope *Sco
 
 	initInput := userdata.EtcdPlaneInput{
 		BaseUserData: userdata.BaseUserData{
-			Users: scope.Config.Spec.Users,
+			Users:  scope.Config.Spec.Users,
+			Groups: scope.Config.Spec.Groups,
 		},
 		Certificates: CACertKeyPair,
 	}
@@ -304,7 +305,8 @@ func (r *EtcdadmConfigReconciler) joinEtcd(ctx context.Context, scope *Scope) (_
 
 	joinInput := userdata.EtcdPlaneJoinInput{
 		BaseUserData: userdata.BaseUserData{
-			Users: scope.Config.Spec.Users,
+			Users:  scope.Config.Spec.Users,
+			Groups: scope.Config.Spec.Groups,
 		},
 		JoinAddress:  joinAddress,
 		Certificates: etcdCerts,

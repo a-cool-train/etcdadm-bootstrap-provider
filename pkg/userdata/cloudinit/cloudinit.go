@@ -42,6 +42,10 @@ func generate(kind string, tpl string, data interface{}) ([]byte, error) {
 		return nil, errors.Wrap(err, "failed to parse users template")
 	}
 
+	if _, err := tm.Parse(groupsTemplate); err != nil {
+		return nil, errors.Wrap(err, "failed to parse groups template")
+	}
+
 	if _, err := tm.Parse(diskSetupTemplate); err != nil {
 		return nil, errors.Wrap(err, "failed to parse disk setup template")
 	}
@@ -78,5 +82,6 @@ func buildEtcdadmArgs(config bootstrapv1alpha3.CloudInitConfig) userdata.Etcdadm
 	return userdata.EtcdadmArgs{
 		Version:        config.Version,
 		EtcdReleaseURL: config.EtcdReleaseURL,
+		InstallDir:     config.InstallDir,
 	}
 }

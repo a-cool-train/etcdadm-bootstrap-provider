@@ -21,6 +21,7 @@ runcmd:
 {{- template "commands" .PostEtcdadmCommands }}
 {{- template "ntp" .NTP }}
 {{- template "users" .Users }}
+{{- template "groups" .Groups }}
 {{- template "disk_setup" .DiskSetup}}
 {{- template "fs_setup" .DiskSetup}}
 {{- template "mounts" .Mounts}}
@@ -31,14 +32,14 @@ runcmd:
 func NewJoinEtcdPlane(input *userdata.EtcdPlaneJoinInput, config bootstrapv1alpha3.CloudInitConfig) ([]byte, error) {
 	input.WriteFiles = input.Certificates.AsFiles()
 	input.ControlPlane = true
+	input.EtcdadmArgs = buildEtcdadmArgs(config)
 	input.EtcdadmJoinCommand = userdata.AddSystemdArgsToCommand(fmt.Sprintf(standardJoinCommand, input.JoinAddress), &input.EtcdadmArgs)
 	if err := prepare(&input.BaseUserData); err != nil {
 		return nil, err
 	}
-	input.EtcdadmArgs = buildEtcdadmArgs(config)
-	userData, err := generate("JoinControlplane", etcdPlaneJoinCloudInit, input)
+	userData, err := generate("JoinEtcdCluster", etcdPlaneJoinCloudInit, input)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to generate user data for machine joining control plane")
+		return nil, errors.Wrapf(err, "failed to generate user data for machine joining etcd cluster")
 	}
 
 	return userData, err

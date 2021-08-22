@@ -45,6 +45,17 @@ ntp:
 )
 
 const (
+	groupsTemplate = `{{ define "groups" -}}
+{{- if .}}
+groups:{{ range . }}
+  - {{ . }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+`
+)
+
+const (
 	usersTemplate = `{{ define "users" -}}
 {{- if . }}
 users:{{ range . }}

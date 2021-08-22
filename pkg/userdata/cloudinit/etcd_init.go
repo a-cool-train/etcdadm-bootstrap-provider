@@ -19,6 +19,7 @@ package cloudinit
 import (
 	bootstrapv1alpha3 "github.com/mrajashree/etcdadm-bootstrap-provider/api/v1alpha3"
 	"github.com/mrajashree/etcdadm-bootstrap-provider/pkg/userdata"
+	"github.com/pkg/errors"
 )
 
 const (
@@ -34,6 +35,7 @@ runcmd:
 {{- template "commands" .PostEtcdadmCommands }}
 {{- template "ntp" .NTP }}
 {{- template "users" .Users }}
+{{- template "groups" .Groups }}
 {{- template "disk_setup" .DiskSetup}}
 {{- template "fs_setup" .DiskSetup}}
 {{- template "mounts" .Mounts}}
@@ -48,9 +50,9 @@ func NewInitEtcdPlane(input *userdata.EtcdPlaneInput, config bootstrapv1alpha3.C
 	input.SentinelFileCommand = sentinelFileCommand
 	input.EtcdadmArgs = buildEtcdadmArgs(config)
 	input.EtcdadmInitCommand = userdata.AddSystemdArgsToCommand(standardInitCommand, &input.EtcdadmArgs)
-	userData, err := generate("InitEtcdplane", etcdPlaneCloudInit, input)
+	userData, err := generate("InitEtcdCluster", etcdPlaneCloudInit, input)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(err, "failed to generate user data for machine initializing etcd cluster")
 	}
 
 	return userData, nil
